@@ -192,16 +192,16 @@
 
       \draw[-,style=dashed] (2,-3) -- (2,3);
 
-      \draw[->] (loc.west) -- (corr.east) node [at start,left,font=\footnotesize,yshift=0.2cm] {$\hat{\mathbf{x}}_t$};
-      \draw[->] (gen.south) -- (corr.north) node [at start,left,font=\footnotesize,yshift=-0.2cm]
+      \draw<3->[->] (loc.west) -- (corr.east) node [at start,left,font=\footnotesize,yshift=0.2cm] {$\hat{\mathbf{x}}_t$};
+      \draw<2->[->] (gen.south) -- (corr.north) node [at start,left,font=\footnotesize,yshift=-0.2cm]
            {$\gamma_{\text{left~foot}}(t), \gamma_{\text{right~foot}}(t), \gamma_{\text{com}}(t), \mathbf{x}(t)$};
-      \draw[->] (corr.south) -- (ctrl.north) node [at start,left,font=\footnotesize,yshift=-0.25cm]
+      \draw<3->[->] (corr.south) -- (ctrl.north) node [at start,left,font=\footnotesize,yshift=-0.25cm]
            {$\gamma^{(n)}_{\text{left~foot}}(t), \gamma^{(n)}_{\text{right~foot}}(t), \gamma^{(n)}_{\text{com}}(t)$};
 
-      \draw[->] (ctrl.south) --++ (0,-1) node [at start,left,font=\footnotesize,yshift=-0.25cm]
+      \draw<4->[->] (ctrl.south) --++ (0,-1) node [at start,left,font=\footnotesize,yshift=-0.25cm]
            {$\dot{\mathbf{q}}_t$};
 
-           \draw[<-] (gen.north) --++ (0,1) node [left,font=\footnotesize,yshift=-0.25cm]
+      \draw[<-] (gen.north) --++ (0,1) node [left,font=\footnotesize,yshift=-0.25cm]
            {footsteps $\mathbf{S}$};
 
 
@@ -213,9 +213,15 @@
 \begin{frame}{Correction temporal synchronization}
 \begin{figure}[ht!]
   \begin{center}
-    \vspace{-0.7cm}
+    \vspace{-1.5cm}
+    \only<1->{
+      \vspace{0.4cm}
+    }
     \begin{tikzpicture}
       \begin{axis}[
+          height=.8\textheight,
+          width=\textwidth,
+          grid=major,
           legend style={
             at={(0.5,-0.2)},
             anchor=north,
@@ -258,14 +264,17 @@
         ] {dat/feet_follower_feet-follower-right-ankle.dat};
         \addlegendentry{right foot}
 
+        \only<7->{
         \addplot[
           red,
         ] table[
           x expr=(\thisrowno{0}-0)*0.005,
           y expr=\thisrowno{1}-0.
         ] {dat/feet_follower_correction-com.dat};
-        \addlegendentry{center of mass (corrected)}
+        \addlegendentry{center of mass (corr.)}
+        }
 
+        \only<6->{
         \addplot[
           blue,
         ] table[
@@ -274,8 +283,10 @@
           x expr=(\thisrowno{0}-0)*0.005,
           y expr=\thisrowno{4}-0.
         ] {dat/feet_follower_correction-left-ankle.dat};
-        \addlegendentry{left foot (corrected)}
+        \addlegendentry{left foot (corr.)}
+        }
 
+        \only<5->{
         \addplot[
           green,
         ] table[
@@ -284,10 +295,11 @@
           x expr=(\thisrowno{0}-0)*0.005,
           y expr=\thisrowno{4}-0.
         ] {dat/feet_follower_correction-right-ankle.dat};
-        \addlegendentry{right foot (corrected)}
+        \addlegendentry{right foot (corr.)}
+        }
       \end{axis}
 
-      \draw [
+      \draw<7-> [
         thick,
         decoration={
           brace,
@@ -296,10 +308,10 @@
         },
         font=\tiny,
         decorate
-      ] (1.4,0.95) -- (1.9,0.95)
+      ] (axis cs:2.1,0.9) -- (axis cs:4.1,0.9)
       node [pos=0.5,anchor=north,yshift=-0.55cm] {left foot corr.};
 
-      \draw [
+      \draw<8-> [
         thick,
         decoration={
           brace,
@@ -308,10 +320,10 @@
         },
         font=\tiny,
         decorate
-      ] (3.4,0.95) -- (3.9,0.95)
+      ] (axis cs:5.1,0.9) -- (axis cs:7.1,0.9)
       node [pos=0.5,anchor=north,yshift=-0.55cm] {right foot corr.};
 
-      \draw [
+      \draw<9-> [
         thick,
         decoration={
           brace,
@@ -319,11 +331,11 @@
         },
         font=\tiny,
         decorate
-      ] (1.4,4.25) -- (3.4,4.25)
-      node [pos=0.5,anchor=north,yshift=-0.55cm] {ZMP corr.};
+      ] (axis cs:2.1,4.25) -- (axis cs:5.1,4.25)
+      node [pos=0.5,anchor=north,yshift=-0.55cm] {CoM corr.};
 
 
-      \draw [
+      \draw<2-> [
         thick,
         decoration={
           brace,
@@ -331,9 +343,9 @@
         },
         font=\tiny,
         decorate
-      ] (1.4,6.35) -- (3.4,6.35)
+      ] (axis cs:2.1,6.35) -- (axis cs:4.1,6.35)
       node [pos=0.5,anchor=north,yshift=-0.55cm] {step 1};
-      \draw [
+      \draw<3-> [
         thick,
         decoration={
           brace,
@@ -341,9 +353,41 @@
         },
         font=\tiny,
         decorate
-      ] (3.4,6.35) -- (6.25,6.35)
+      ] (axis cs:5.1,6.35) -- (axis cs:7.1,6.35)
       node [pos=0.5,anchor=north,yshift=-0.55cm] {step 2};
 
+
+      \def\w{0.5}
+      \def\h{0.75}
+      \def\dx{8.}
+
+      \def\dy{0.}
+      % left step planned 1
+      \filldraw[pattern=north east lines] (\dx + 0., \dy + 0.5)
+      rectangle (\dx + 0. + \w, \dy + \h + 0.5);
+
+      % left step planned 1 - drift
+      \draw<4->[style=solid,color=red,line width=1.25] (\dx, \dy - 0.1 + 0.5)
+      rectangle (\dx + \w, \dy + \h - 0.1 + 0.5);
+
+      % right step planned 1
+      \filldraw[pattern=north east lines] (\dx + 1., \dy + 1. + 0.5)
+      rectangle (\dx + 1. + \w, \dy + \h + 1. + 0.5)
+      node [pos=0.5,anchor=north,font=\tiny,yshift=0.75cm] {step 1};
+
+      % right step planned 1 - corrected
+      \draw<5->[style=solid,color=green,line width=1.25] (\dx + 1., \dy + 1. + 0.5)
+      rectangle (\dx + 1. + \w, \dy + \h + 1. + 0.5);
+
+      \def\dy{1.}
+      % left step planned 2
+      \filldraw[pattern=north east lines] (\dx + 0., \dy + 0.5)
+      rectangle (\dx + 0. + \w, \dy + \h + 0.5)
+      node [pos=0.5,anchor=north,font=\tiny,yshift=0.75cm] {step 2};
+
+      % left step planned 2 - corrected
+      \draw<6->[style=solid,color=green,line width=1.25] (\dx + 0., \dy + 0.5)
+      rectangle (\dx + 0. + \w, \dy + \h + 0.5);
 
     \end{tikzpicture}
   \end{center}
@@ -358,8 +402,8 @@
       \begin{block}{Error computation}
 
         \begin{itemize}
-        \item $\mathbf{x} \in \text{SE}(2)$ the planned robot position.
-        \item $\hat{\mathbf{x}} \in \text{SE}(2)$ the robot position
+        \item $\mathbf{x} \in \text{SE}(2)$ the planned position of the root body.
+        \item $\hat{\mathbf{x}} \in \text{SE}(2)$ the root body position
           perceived by the localization system.
         \end{itemize}
 
@@ -434,12 +478,12 @@
 
 \end{frame}
 
-\begin{frame}{2a. Foot trajectories update}
+\begin{frame}{2a. Swing foot trajectory update}
 
   \begin{columns}[c]
     \begin{column}{0.5\textwidth}
 
-      \begin{block}{Footsteps update}
+      \begin{block}{Footstep update}
         \begin{itemize}
         \item A walk movement is a sequence of footsteps $S \in \text{SE}(2)^{\text{nsteps}}$.
         \item The remaining steps set is $S^{\text{future}}$.
@@ -517,7 +561,19 @@
           $\delta \mathbf{x}$
         };
 
+
+        \draw<7->[style=solid, color=green,line width=1.25] (0., \dy)
+        rectangle (0. + \w, \dy + \h);
+        \draw<7->[style=solid, color=green,line width=1.25] (1., \dy + 0.5)
+        rectangle (1. + \w, \dy + \h + 0.5);
+        \def\dy{3}
+        \draw<7->[style=solid, color=green,line width=1.25] (0., \dy)
+        rectangle (0. + \w, \dy + \h);
+        \draw<7->[style=solid, color=green,line width=1.25] (1., \dy + 0.5)
+        rectangle (1. + \w, \dy + \h + 0.5);
+
         % right step planned
+        \def\dy{2}
         \draw<8->[style=solid, color=orange,line width=1.25, rotate=\drifttheta * 0.5] (1. + \driftx * .5, \dy + 0.5 + \drifty * 0.5)
         rectangle (1. + \driftx * 0.5 + \w, \dy + \drifty * 0.5 + \h + 0.5);
 
@@ -536,12 +592,12 @@
   \end{columns}
 \end{frame}
 
-\begin{frame}{2a. Foot trajectories update (II)}
+\begin{frame}{2a. Swing foot trajectory update (II)}
 
   \begin{columns}[c]
     \begin{column}{0.5\textwidth}
 
-      \begin{block}{Foot trajectories update}
+      \begin{block}{Swing foot trajectory update}
         \begin{itemize}
           \item Cannot regenerate the trajectory (too long).
           \item Provide a smooth transition via $\Delta^T (t) \in \text{SE}(2)$.
@@ -552,7 +608,7 @@
         \end{equation}
 
         \begin{equation}
-          \gamma_{\text{foot}}^{(n)}(t) = \gamma_{\text{foot}}(t) . \prod_{i=1}^{n}\Delta^{t_i}(t)
+          \gamma_{\text{foot}}^{(n)}(t) = ( \prod_{i=0}^{n-1}\Delta^{t_{n-i}}(t) ) . \gamma_{\text{foot}}(t)
         \end{equation}
       \end{block}
     \end{column}
@@ -603,30 +659,32 @@
 
 \begin{frame}{2b. CoM trajectory update}
 
-      \begin{block}{Reshaping the CoM trajectory}
-        \begin{itemize}
-          \item Stability must be preserved.
-          \item Simplified ZMP model.\\
-            \footnotesize
-            \cite{11icra.perrin}
-        \end{itemize}
+  \begin{itemize}
+  \item Stability must be preserved.
+  \item Simplified ZMP model.\\
+    \footnotesize
+    \cite{11icra.perrin}
+  \end{itemize}
 
-        \begin{equation} \label{eq:zmpsolcor}
-          \mathbf{c}^{(n)}(t) =
-          \underbrace{\scriptstyle \cosh(\sqrt{\frac{g}{z_c}}.t) . \mathbf{V} +
-            \sinh(\sqrt{\frac{g}{z_c}}.t) . \mathbf{W} +
-            \mathbf{r}(t)}_{\mathbf{c}(t) \in \mathbb{R}^2} + \sum_{i=1}^n \Delta^{t_i}(t)
-        \end{equation}
+  \begin{equation}
+    \mathbf{z} = \mathbf{c} - \frac{z_c}{g} \ddot{\mathbf{c}}
+  \end{equation}
 
-        \begin{center}
-          $\mathbf{V}$, $\mathbf{W}$ constrain the trajectory initial
-          position and velocity.
-        \end{center}
+  \begin{equation} \label{eq:zmpsolcor}
+    \mathbf{c}^{(n)}(t) =
+    \underbrace{\scriptstyle \cosh(\sqrt{\frac{g}{z_c}}.t) . \mathbf{V} +
+      \sinh(\sqrt{\frac{g}{z_c}}.t) . \mathbf{W} +
+      \mathbf{r}(t)}_{\mathbf{c}(t) \in \mathbb{R}^2} + \sum_{i=1}^n \Delta^{t_i}(t)
+  \end{equation}
 
-        \begin{equation}
-          \forall t \in \mathbb{R}, \Delta^t(0) = \dot{\Delta}^t(0) = 0
-        \end{equation}
-      \end{block}
+  \begin{center}
+    $\mathbf{V}$, $\mathbf{W}$ constrain the trajectory initial
+    position and velocity.
+  \end{center}
+
+  \begin{equation}
+    \forall t \in \mathbb{R}, \Delta^t(0) = \dot{\Delta}^t(0) = 0
+  \end{equation}
 \end{frame}
 
 \begin{frame}{3. Whole-body movement update}
@@ -698,32 +756,34 @@
       % left step planned
       \filldraw[pattern=north east lines] (
       0. + 0.1   * \w,
-      0. + 0.225 * \h)
+      0. + 0.225 * \h + 0.15)
       rectangle (
       0. + 0.1   * \w + \ws,
-      0. + 0.225 * \h + \hs);
+      0. + 0.225 * \h + \hs + 0.15);
       \filldraw[pattern=north east lines] (
       0. + 0.1   * \w,
-      1. + 0.225 * \h)
+      1. + 0.225 * \h + 0.15)
       rectangle (
       0. + 0.1   * \w + \ws,
-      1. + 0.225 * \h + \hs);
+      1. + 0.225 * \h + \hs + 0.15);
 
 
       % right step planned
       \filldraw[pattern=north east lines] (
       0. + 0.75 * \w,
-      0. + 0.225  * \h)
+      0. + 0.225  * \h - 0.15)
       rectangle (
       0. + 0.75  * \w + \ws,
-      0. + 0.225 * \h + \hs);
+      0. + 0.225 * \h + \hs - 0.15)
+      node (rsp1) {};
 
       \filldraw[pattern=north east lines] (
       0. + 0.75 * \w,
-      1. + 0.225  * \h)
+      1. + 0.225  * \h - 0.15)
       rectangle (
       0. + 0.75  * \w + \ws,
-      1. + 0.225 * \h + \hs);
+      1. + 0.225 * \h + \hs - 0.15)
+      node (rsp2) {};
 
 
       \foreach \dy in {0., 1.}
@@ -767,8 +827,11 @@
 
                % arrow
                \draw[smooth,-,thick]
-               (0.75 * \w + \ws/2.,\h/2.) --
-               (0.75 * \w + \ws/2.,1.+\h/2.)
+               (0. + 0.75  * \w + \ws / 2,
+               0. + 0.225 * \h + \hs / 2 - 0.15)
+               --
+               (0. + 0.75  * \w + \ws / 2,
+               1. + 0.225 * \h + \hs / 2 - 0.15)
                node[midway,left]
                {
                  $\gamma$
