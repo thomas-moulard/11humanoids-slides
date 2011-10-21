@@ -187,22 +187,22 @@
 
       \draw (-1,0) node [state] (corr) {Trajectories Correction};
       \draw (-1,1.5) node [state] (gen) {Trajectories Generation};
-
-      \draw (4,0) node (loc) [state] {Localization System};
+      
+      \draw (4,0) node (loc) [state] {Localization};
 
       \draw[-,style=dashed] (2,-3) -- (2,3);
 
-      \draw<3->[->] (loc.west) -- (corr.east) node [at start,left,font=\footnotesize,yshift=0.2cm] {$\hat{\mathbf{x}}_t$};
-      \draw<2->[->] (gen.south) -- (corr.north) node [at start,left,font=\footnotesize,yshift=-0.2cm]
-           {$\gamma_{\text{left~foot}}(t), \gamma_{\text{right~foot}}(t), \gamma_{\text{com}}(t), \mathbf{x}(t)$};
-      \draw<3->[->] (corr.south) -- (ctrl.north) node [at start,left,font=\footnotesize,yshift=-0.25cm]
-           {$\gamma^{(n)}_{\text{left~foot}}(t), \gamma^{(n)}_{\text{right~foot}}(t), \gamma^{(n)}_{\text{com}}(t)$};
+      \draw<3->[->] (loc.west) -- (corr.east) node [at start,left,font=\tiny,yshift=0.2cm] {$\hat{\mathbf{x}}_t \in \text{SE}(2)$};
+      \draw<2->[->] (gen.south) -- (corr.north) node [at start,left,font=\tiny,yshift=-0.2cm]
+           {$(\gamma_{\text{left~foot}}(t), \gamma_{\text{right~foot}}(t), \gamma_{\text{com}}(t), \mathbf{x}(t)) \in \text{SE}(3)^3 \times \text{SE}(2)$};
+      \draw<3->[->] (corr.south) -- (ctrl.north) node [at start,left,font=\tiny,yshift=-0.25cm]
+           {$(\gamma'_{\text{left~foot}}(t), \gamma'_{\text{right~foot}}(t), \gamma'_{\text{com}}(t)) \in \text{SE}(3)^4$};
 
-      \draw<4->[->] (ctrl.south) --++ (0,-1) node [at start,left,font=\footnotesize,yshift=-0.25cm]
+      \draw<4->[->] (ctrl.south) --++ (0,-1) node [at start,left,font=\tiny,yshift=-0.25cm]
            {$\dot{\mathbf{q}}_t$};
 
-      \draw[<-] (gen.north) --++ (0,1) node [left,font=\footnotesize,yshift=-0.25cm]
-           {footsteps $\mathbf{S}$};
+      \draw[<-] (gen.north) --++ (0,1) node [left,font=\tiny,yshift=-0.25cm]
+           {footsteps $\mathbf{S} \in \text{SE}(2)^{\text{nsteps}}$};
 
 
 
