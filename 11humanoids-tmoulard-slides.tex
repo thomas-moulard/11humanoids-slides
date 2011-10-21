@@ -150,7 +150,7 @@
 \begin{frame}{What's next?}
 
   \begin{block}{Previous work}
-    Previous work usually focused on ensuring robot stability when a
+    Previous work usually focused on ensuring robot balance when a
     perturbation occurs and not on following the plan as closely as
     possible.\\
 
@@ -193,13 +193,28 @@
       \draw[-,style=dashed] (2,-3) -- (2,3);
 
       \draw<3->[->] (loc.west) -- (corr.east) node [at start,left,font=\tiny,yshift=0.2cm] {$\hat{\mathbf{x}}_t \in \text{SE}(2)$};
+
+      \draw<1-2> (loc.west) node [at start,left,font=\tiny,yshift=0.2cm] {\phantom{$\hat{\mathbf{x}}_t \in \text{SE}(2)$}};
+
+
       \draw<2->[->] (gen.south) -- (corr.north) node [at start,left,font=\tiny,yshift=-0.2cm]
            {$(\gamma_{\text{left~foot}}(t), \gamma_{\text{right~foot}}(t), \gamma_{\text{com}}(t), \mathbf{x}(t)) \in \text{SE}(3)^3 \times \text{SE}(2)$};
+
+      \draw<1> (gen.south) node [at start,left,font=\tiny,yshift=-0.2cm]
+           {\phantom{$(\gamma_{\text{left~foot}}(t), \gamma_{\text{right~foot}}(t), \gamma_{\text{com}}(t), \mathbf{x}(t)) \in \text{SE}(3)^3 \times \text{SE}(2)$}};
+
+
       \draw<3->[->] (corr.south) -- (ctrl.north) node [at start,left,font=\tiny,yshift=-0.25cm]
-           {$(\gamma'_{\text{left~foot}}(t), \gamma'_{\text{right~foot}}(t), \gamma'_{\text{com}}(t)) \in \text{SE}(3)^4$};
+           {$(\gamma'_{\text{left~foot}}(t), \gamma'_{\text{right~foot}}(t), \gamma'_{\text{com}}(t)) \in \text{SE}(3)^3$};
+
+      \draw<1-2> (corr.south) node [at start,left,font=\tiny,yshift=-0.25cm]
+           {\phantom{$(\gamma'_{\text{left~foot}}(t), \gamma'_{\text{right~foot}}(t), \gamma'_{\text{com}}(t)) \in \text{SE}(3)^3$}};
 
       \draw<4->[->] (ctrl.south) --++ (0,-1) node [at start,left,font=\tiny,yshift=-0.25cm]
-           {$\dot{\mathbf{q}}_t$};
+           {$\dot{\mathbf{q}}_t \in \mathbb{R}^n$};
+
+      \draw<1-3> (-1,-3) node [at start,left,font=\tiny,yshift=-0.25cm]
+           {\phantom{$\dot{\mathbf{q}}_t \in \mathbb{R}^n$}};
 
       \draw[<-] (gen.north) --++ (0,1) node [left,font=\tiny,yshift=-0.25cm]
            {footsteps $\mathbf{S} \in \text{SE}(2)^{\text{nsteps}}$};
@@ -220,7 +235,7 @@
     \begin{tikzpicture}
       \begin{axis}[
           height=.8\textheight,
-          width=\textwidth,
+          width=.75\textwidth,
           grid=major,
           legend style={
             at={(0.5,-0.2)},
@@ -299,42 +314,6 @@
         }
       \end{axis}
 
-      \draw<7-> [
-        thick,
-        decoration={
-          brace,
-          mirror,
-          raise=0.5cm
-        },
-        font=\tiny,
-        decorate
-      ] (axis cs:2.1,0.9) -- (axis cs:4.1,0.9)
-      node [pos=0.5,anchor=north,yshift=-0.55cm] {left foot corr.};
-
-      \draw<8-> [
-        thick,
-        decoration={
-          brace,
-          mirror,
-          raise=0.5cm
-        },
-        font=\tiny,
-        decorate
-      ] (axis cs:5.1,0.9) -- (axis cs:7.1,0.9)
-      node [pos=0.5,anchor=north,yshift=-0.55cm] {right foot corr.};
-
-      \draw<9-> [
-        thick,
-        decoration={
-          brace,
-          raise=-1.05cm
-        },
-        font=\tiny,
-        decorate
-      ] (axis cs:2.1,4.25) -- (axis cs:5.1,4.25)
-      node [pos=0.5,anchor=north,yshift=-0.55cm] {CoM corr.};
-
-
       \draw<2-> [
         thick,
         decoration={
@@ -345,6 +324,10 @@
         decorate
       ] (axis cs:2.1,6.35) -- (axis cs:4.1,6.35)
       node [pos=0.5,anchor=north,yshift=-0.55cm] {step 1};
+
+      \draw<1>(axis cs:2.1,6.35)
+      node [pos=0.5,anchor=north,yshift=-0.55cm] {\phantom{step 1}};
+
       \draw<3-> [
         thick,
         decoration={
@@ -356,38 +339,57 @@
       ] (axis cs:5.1,6.35) -- (axis cs:7.1,6.35)
       node [pos=0.5,anchor=north,yshift=-0.55cm] {step 2};
 
+      % error measure
+      \draw<4->[<-]
+      (1.3, 0.5) -- (1.3, 1.5)
+      node [font=\tiny,anchor=north,yshift=0.3cm, line width=1.3]
+      {error measure};
 
       \def\w{0.5}
       \def\h{0.75}
       \def\dx{8.}
 
-      \def\dy{0.}
+      \def\dy{.5}
       % left step planned 1
       \filldraw[pattern=north east lines] (\dx + 0., \dy + 0.5)
       rectangle (\dx + 0. + \w, \dy + \h + 0.5);
 
       % left step planned 1 - drift
-      \draw<4->[style=solid,color=red,line width=1.25] (\dx, \dy - 0.1 + 0.5)
-      rectangle (\dx + \w, \dy + \h - 0.1 + 0.5);
+      \draw<4->[style=solid,color=red,line width=1.25] (\dx, \dy - 0.3 + 0.5)
+      rectangle (\dx + \w, \dy + \h - 0.3 + 0.5);
+
+      \filldraw[pattern=north east lines] (\dx + 1., \dy + 0.5)
+      rectangle (\dx + 1. + \w, \dy + \h + 0.5);
+      \draw<4->[style=solid,color=red,line width=1.25] (\dx + 1., \dy - 0.3 + 0.5)
+      rectangle (\dx + \w + 1., \dy + \h - 0.3 + 0.5);
+
 
       % right step planned 1
-      \filldraw[pattern=north east lines] (\dx + 1., \dy + 1. + 0.5)
-      rectangle (\dx + 1. + \w, \dy + \h + 1. + 0.5)
+      \filldraw[pattern=north east lines] (\dx + 1., \dy + 3.)
+      rectangle (\dx + 1. + \w, \dy + \h + 3.)
       node [pos=0.5,anchor=north,font=\tiny,yshift=0.75cm] {step 1};
 
       % right step planned 1 - corrected
-      \draw<5->[style=solid,color=green,line width=1.25] (\dx + 1., \dy + 1. + 0.5)
-      rectangle (\dx + 1. + \w, \dy + \h + 1. + 0.5);
+      \draw<4->[style=solid,color=red,line width=1.25] (\dx + 1., \dy + 3.-0.3)
+      rectangle (\dx + 1. + \w, \dy + \h + 3. -0.3);
 
-      \def\dy{1.}
+
+      \draw<5->[style=solid,color=green,line width=1.25] (\dx + 1., \dy + 3.)
+      rectangle (\dx + 1. + \w, \dy + \h + 3.);
+
+      \def\dy{3.}
       % left step planned 2
       \filldraw[pattern=north east lines] (\dx + 0., \dy + 0.5)
       rectangle (\dx + 0. + \w, \dy + \h + 0.5)
       node [pos=0.5,anchor=north,font=\tiny,yshift=0.75cm] {step 2};
 
+      \draw<4->[style=solid,color=red,line width=1.25] (\dx, \dy + 0.5 -0.3)
+      rectangle (\dx + \w, \dy + \h + 0.5 -0.3);
+
       % left step planned 2 - corrected
       \draw<6->[style=solid,color=green,line width=1.25] (\dx + 0., \dy + 0.5)
       rectangle (\dx + 0. + \w, \dy + \h + 0.5);
+
 
     \end{tikzpicture}
   \end{center}
@@ -604,7 +606,7 @@
         \end{itemize}
 
         \begin{equation}
-          \gamma_{\text{foot}}^{(1)}(t) = \gamma_{\text{foot}}(t) . \Delta^t(t)
+          \gamma_{\text{foot}}^{(1)}(t) = \Delta^t(t) . \gamma_{\text{foot}}(t)
         \end{equation}
 
         \begin{equation}
@@ -660,7 +662,7 @@
 \begin{frame}{2b. CoM trajectory update}
 
   \begin{itemize}
-  \item Stability must be preserved.
+  \item Balanced must be preserved.
   \item Simplified ZMP model.\\
     \footnotesize
     \cite{11icra.perrin}
